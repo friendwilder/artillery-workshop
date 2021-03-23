@@ -1,0 +1,8 @@
+config:
+  target: "https://www.google.com"
+  phases:
+    - duration: 1
+      arrivalRate: 1
+      name: "Phase 1"
+  processor: "./myProcessor.js"
+# For more information: https://artillery.io/docs/script-reference/
