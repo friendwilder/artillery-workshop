@@ -1,7 +1,7 @@
 config:
   target: "https://api.todoist.com"
   phases:
-    - duration: 3
+    - duration: 1
       arrivalRate: 1
       name: "Phase 1"
   defaults:
@@ -11,6 +11,20 @@ config:
   # processor: "./myProcessor.js"
 scenarios:
   - flow:
+      - log: "Starting..."
       - get:
           url: "/rest/v1/tasks"
+      - post:
+          url: "/rest/v1/tasks"
+          json:
+            content: Buy garnachas
+            due_string: tomorrow at 21:00
+            due_lang: en
+            priority: 4
+          capture:
+            - json: "$.id"
+              as: "id"
+            - json: "$.content"
+              as: content
+      - log: "Task ID {{ id }}, {{ content }}"
 # For more information: https://artillery.io/docs/script-reference/
