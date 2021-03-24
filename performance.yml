@@ -1,8 +1,17 @@
 config:
-  target: "https://www.google.com"
+  target: "https://api.todoist.com"
   phases:
     - duration: 1
       arrivalRate: 1
       name: "Phase 1"
-  processor: "./myProcessor.js"
+  defaults:
+  headers:
+    Authorization: Bearer {{ $processEnvironment.TOKEN }}
+    Content-type: application/json
+  # processor: "./myProcessor.js"
+
+scenarios:
+  - flow:
+      - get:
+          url: "/rest/v1/tasks"
 # For more information: https://artillery.io/docs/script-reference/
