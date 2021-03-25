@@ -8,7 +8,7 @@ config:
     headers:
       Authorization: Bearer {{ $processEnvironment.TOKEN }}
       Content-Type: application/json
-  # processor: "./myProcessor.js"
+  processor: "./my-functions.js"
 scenarios:
   - name: "todoist API all requests scenario"
     weight: 1/2
@@ -19,13 +19,14 @@ scenarios:
           capture:
             - json: "$.status"
               as: "get_tasks_status"
+      - function: "generateRandomData"
       - post:
           url: "/rest/v1/tasks"
           json:
-            content: Buy garnachas
-            due_string: tomorrow at 21:00
-            due_lang: en
-            priority: 4
+            content: "{{ taskAction }}"
+            due_string: "{{ taskDue }}"
+            due_lang: "{{ taskLang }}"
+            priority: "{{ taskPriority }}"
           capture:
             - json: "$.id"
               as: "id"
@@ -34,11 +35,13 @@ scenarios:
       - log: "Task ID {{ id }}, {{ content }}"
       - get:
           url: "/rest/v1/tasks/{{ id }}"
+      - function: "generateNewRandomData"
       - post:
           url: "/rest/v1/tasks/{{ id }}"
           json:
-            content: Buy
-            priority: 3
+            content: {{ taskNewAction }}
+            priority: {{ taskNewPriority }}
+      - log: "Updated task with  {{ taskNewAction }}, {{ taskNewPriority }}"
       - post:
           url: "/rest/v1/tasks/{{ id }}/close"
       - post:
@@ -46,7 +49,7 @@ scenarios:
       - delete:
           url: "/rest/v1/tasks/{{ id }}"
   - name: "Real Scenario for todoist API"
-    weight: 2/3
+    weight: 1/2
     flow:
       - log: "Real scenario for todoist API"
       - get:
