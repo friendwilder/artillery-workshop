@@ -1,7 +1,7 @@
 config:
   target: "https://api.todoist.com"
   phases:
-    - duration: 1
+    - duration: 2
       arrivalRate: 1
       name: "Phase 1"
   defaults:
@@ -10,8 +10,10 @@ config:
       Content-Type: application/json
   # processor: "./myProcessor.js"
 scenarios:
-  - flow:
-      - log: "Starting..."
+  - name: "todoist API all requests scenario"
+    weight: 1/2
+    flow:
+      - log: "todoist API all requests scenario"
       - get:
           url: "/rest/v1/tasks"
           capture:
@@ -43,4 +45,12 @@ scenarios:
           url: "/rest/v1/tasks/{{ id }}/reopen"
       - delete:
           url: "/rest/v1/tasks/{{ id }}"
+  - name: "Real Scenario for todoist API"
+    weight: 2/3
+    flow:
+      - log: "Real scenario for todoist API"
+      - get:
+          url: "/rest/v1/tasks"
+# For more information: https://artillery.io/docs/script-reference/
+
 # For more information: https://artillery.io/docs/script-reference/
